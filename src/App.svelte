@@ -1,11 +1,13 @@
 <script lang="ts">
   import * as Tone from "tone";
+  import Button from "./lib/Button.svelte";
+
   let currentTempo = 60;
   let playing = false;
 
   let osc: Tone.Oscillator;
 
-  function handleClick() {
+  function togglePlaying() {
     if (!osc) {
       osc = new Tone.Oscillator().toDestination();
     }
@@ -29,26 +31,22 @@
 </script>
 
 <main>
-  <h1>MiniMet</h1>
+  <p class="text-5xl mb-4">
+    {currentTempo}<span class="text-lg text-slate-400 ml-2">bpm</span>
+  </p>
 
-  <input type="number" bind:value={currentTempo} size="3" />
+  <div class="mb-2">
+    <Button on:click={() => (currentTempo -= 5)}>-5</Button>
+    <Button on:click={() => currentTempo--}>-</Button>
+    <Button on:click={() => currentTempo++}>+</Button>
+    <Button on:click={() => (currentTempo += 5)}>+5</Button>
+  </div>
 
-  <button on:click={handleClick}>
+  <Button on:click={togglePlaying}>
     {#if playing}
       Pause
     {:else}
       Play
     {/if}
-  </button>
+  </Button>
 </main>
-
-<style>
-  input {
-    font-size: 2.5rem;
-    display: block;
-    text-align: center;
-    padding: 0.25rem;
-    margin-bottom: 1rem;
-    width: 10ch;
-  }
-</style>
