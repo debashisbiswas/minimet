@@ -1,6 +1,8 @@
 <script lang="ts">
   import * as Tone from "tone";
   import Button from "./lib/Button.svelte";
+  import Pause from "./lib/icons/Pause.svelte";
+  import Play from "./lib/icons/Play.svelte";
 
   let currentTempo = 60;
   let playing = false;
@@ -44,9 +46,9 @@
 
   <Button on:click={togglePlaying}>
     {#if playing}
-      Pause
+      <Pause />
     {:else}
-      Play
+      <Play />
     {/if}
   </Button>
 </main>
