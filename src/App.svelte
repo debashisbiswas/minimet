@@ -8,7 +8,7 @@
   let scheduleId = 0;
   Tone.Transport.bpm.value = 60;
 
-  const player = new Tone.Player("./click.wav").toDestination();
+  const player = new Tone.Player("./asrx_down.wav").toDestination();
   async function togglePlaying() {
     await Tone.start();
     Tone.Transport.start();
@@ -20,7 +20,7 @@
           player.start(time);
         },
         "4n",
-        Tone.now()
+        Tone.now(),
       );
     } else {
       Tone.Transport.clear(scheduleId);
@@ -42,18 +42,20 @@
     >
   </p>
 
-  <div class="mb-2 grid grid-cols-2 gap-4">
+  <div class="mb-2 grid grid-cols-2 gap-3">
     <Button on:click={() => updateTempo((tempo) => tempo - 1)}>-</Button>
     <Button on:click={() => updateTempo((tempo) => tempo + 1)}>+</Button>
     <Button on:click={() => updateTempo((tempo) => tempo - 5)}>-5</Button>
     <Button on:click={() => updateTempo((tempo) => tempo + 5)}>+5</Button>
-  </div>
 
-  <Button on:click={togglePlaying}>
-    {#if playing}
-      <Pause />
-    {:else}
-      <Play />
-    {/if}
-  </Button>
+    <div class="col-span-2">
+      <Button on:click={togglePlaying}>
+        {#if playing}
+          <Pause />
+        {:else}
+          <Play />
+        {/if}
+      </Button>
+    </div>
+  </div>
 </main>
