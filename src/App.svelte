@@ -6,7 +6,7 @@
 
   let playing = false;
   let scheduleId = 0;
-  Tone.Transport.bpm.value = 60;
+  Tone.Transport.bpm.value = 80;
 
   const player = new Tone.Player("./asrx_down.wav").toDestination();
   async function togglePlaying() {
