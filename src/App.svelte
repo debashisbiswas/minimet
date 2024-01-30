@@ -8,20 +8,21 @@
   let scheduleId = 0;
   Tone.Transport.bpm.value = 80;
 
-  const player = new Tone.Player("./asrx_down.wav").toDestination();
   async function togglePlaying() {
     await Tone.start();
     Tone.Transport.start();
 
     if (!playing) {
-      scheduleId = Tone.Transport.scheduleRepeat(
-        (time) => {
-          // Ensure time is passed into this function, or the click timing won't be consistent
-          player.start(time);
-        },
-        "4n",
-        Tone.now(),
-      );
+      scheduleId = Tone.Transport.scheduleRepeat((time) => {
+        const noteLength = 0.015;
+
+        const gain = new Tone.Gain(16).toDestination();
+        const osc = new Tone.Oscillator(783.99).connect(gain);
+        gain.gain.linearRampToValueAtTime(0, time + noteLength);
+
+        osc.start(time);
+        osc.stop(time + noteLength);
+      }, "4n");
     } else {
       Tone.Transport.clear(scheduleId);
       scheduleId = 0;
