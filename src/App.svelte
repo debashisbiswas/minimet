@@ -1,17 +1,18 @@
 <script lang="ts">
+  import { fade } from "svelte/transition";
   import * as Tone from "tone";
   import Button from "./lib/Button.svelte";
   import Pause from "./lib/icons/Pause.svelte";
   import Play from "./lib/icons/Play.svelte";
 
-  let flashDiv: HTMLDivElement;
+  const flashTime = 100;
   let playing = false;
   let scheduleId = 0;
+  let flash = false;
   Tone.Transport.bpm.value = 80;
 
   async function togglePlaying() {
     await Tone.start();
-    Tone.Transport.start();
 
     if (!playing) {
       scheduleId = Tone.Transport.scheduleRepeat((time) => {
@@ -24,13 +25,15 @@
         osc.start(time);
         osc.stop(time + noteLength);
 
-        flashDiv.classList.add("flash");
+        flash = true;
         setTimeout(() => {
-          flashDiv.classList.remove("flash");
-        }, 100);
+          flash = false;
+        }, flashTime);
       }, "4n");
+      Tone.Transport.start();
     } else {
       Tone.Transport.clear(scheduleId);
+      Tone.Transport.stop();
       scheduleId = 0;
     }
 
@@ -38,20 +41,29 @@
   }
 
   async function updateTempo(updateFn: (currentTempo: number) => number) {
+    if (scheduleId) {
+      Tone.Transport.clear(scheduleId);
+      scheduleId = 0;
+    }
+    Tone.Transport.stop();
     Tone.Transport.bpm.value = Math.round(updateFn(Tone.Transport.bpm.value));
+    Tone.Transport.start();
   }
 </script>
 
 <main>
   <div class="mb-4 flex justify-center">
     <div class="relative">
-      <div
-        class="absolute -inset-1 rounded-full bg-teal-300 opacity-0 blur transition ease-out"
-        bind:this={flashDiv}
-      ></div>
+      {#if flash}
+        <div
+          out:fade={{ duration: flashTime }}
+          class="absolute -inset-1 rounded-full bg-teal-300 blur"
+        ></div>
+      {/if}
       <div
         class="h-6 w-6 rounded-full transition"
-        class:bg-teal-600={playing}
+        class:bg-teal-900={!playing}
+        class:bg-teal-500={playing}
       ></div>
     </div>
   </div>
@@ -79,9 +91,3 @@
     </div>
   </div>
 </main>
-
-<style lang="postcss">
-  :global(.flash) {
-    @apply opacity-100;
-  }
-</style>
