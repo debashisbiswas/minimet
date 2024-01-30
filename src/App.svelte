@@ -4,6 +4,7 @@
   import Pause from "./lib/icons/Pause.svelte";
   import Play from "./lib/icons/Play.svelte";
 
+  let flashDiv: HTMLDivElement;
   let playing = false;
   let scheduleId = 0;
   Tone.Transport.bpm.value = 80;
@@ -22,6 +23,11 @@
 
         osc.start(time);
         osc.stop(time + noteLength);
+
+        flashDiv.classList.add("flash");
+        setTimeout(() => {
+          flashDiv.classList.remove("flash");
+        }, 100);
       }, "4n");
     } else {
       Tone.Transport.clear(scheduleId);
@@ -37,6 +43,19 @@
 </script>
 
 <main>
+  <div class="mb-4 flex justify-center">
+    <div class="relative">
+      <div
+        class="absolute -inset-1 rounded-full bg-teal-300 opacity-0 blur transition ease-out"
+        bind:this={flashDiv}
+      ></div>
+      <div
+        class="h-6 w-6 rounded-full transition"
+        class:bg-teal-600={playing}
+      ></div>
+    </div>
+  </div>
+
   <p class="mb-4 text-5xl">
     {Math.round(Tone.Transport.bpm.value)}<span
       class="ml-2 text-lg text-slate-400">bpm</span
@@ -60,3 +79,9 @@
     </div>
   </div>
 </main>
+
+<style lang="postcss">
+  :global(.flash) {
+    @apply opacity-100;
+  }
+</style>
