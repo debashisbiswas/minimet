@@ -68,9 +68,9 @@
     </div>
   </div>
 
-  <p class="mb-4 text-5xl">
+  <p class="mb-4 text-6xl">
     {Math.round(Tone.Transport.bpm.value)}<span
-      class="ml-2 text-lg text-slate-400">bpm</span
+      class="ml-2 text-xl text-slate-400">bpm</span
     >
   </p>
 
