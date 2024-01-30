@@ -36,9 +36,9 @@
 </script>
 
 <main>
-  <p class="text-5xl mb-4">
+  <p class="mb-4 text-5xl">
     {Math.round(Tone.Transport.bpm.value)}<span
-      class="text-lg text-slate-400 ml-2">bpm</span
+      class="ml-2 text-lg text-slate-400">bpm</span
     >
   </p>
 
