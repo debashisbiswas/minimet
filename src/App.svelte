@@ -41,13 +41,7 @@
   }
 
   async function updateTempo(updateFn: (currentTempo: number) => number) {
-    if (scheduleId) {
-      Tone.Transport.clear(scheduleId);
-      scheduleId = 0;
-    }
-    Tone.Transport.stop();
     Tone.Transport.bpm.value = Math.round(updateFn(Tone.Transport.bpm.value));
-    Tone.Transport.start();
   }
 </script>
 
