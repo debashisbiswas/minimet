@@ -7,34 +7,43 @@
 
   const flashTime = 100;
   let playing = false;
-  let scheduleId = 0;
   let flash = false;
   Tone.Transport.bpm.value = 80;
+
+  const noteLength = 0.01;
+  const tickPromise = Tone.Offline(() => {
+    const time = Tone.now();
+    const gain = new Tone.Gain(16).toDestination();
+    const osc = new Tone.Oscillator(783.99).connect(gain);
+
+    gain.gain.linearRampToValueAtTime(0, time + noteLength);
+
+    osc.start(time).stop(time + noteLength * 2);
+  }, noteLength);
 
   async function togglePlaying() {
     await Tone.start();
 
     if (!playing) {
-      scheduleId = Tone.Transport.scheduleRepeat((time) => {
-        const noteLength = 0.015;
+      const player = new Tone.Player(await tickPromise).toDestination();
 
-        const gain = new Tone.Gain(16).toDestination();
-        const osc = new Tone.Oscillator(783.99).connect(gain);
-        gain.gain.linearRampToValueAtTime(0, time + noteLength);
+      Tone.Transport.scheduleRepeat((time) => {
+        player.start(time);
 
-        osc.start(time);
-        osc.stop(time + noteLength);
+        Tone.Draw.schedule(function () {
+          flash = true;
+        }, time);
 
-        flash = true;
-        setTimeout(() => {
-          flash = false;
-        }, flashTime);
+        Tone.Draw.schedule(
+          function () {
+            flash = false;
+          },
+          time + flashTime / 1000,
+        );
       }, "4n");
       Tone.Transport.start();
     } else {
-      Tone.Transport.clear(scheduleId);
       Tone.Transport.stop();
-      scheduleId = 0;
     }
 
     playing = !playing;
