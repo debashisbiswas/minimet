@@ -5,7 +5,7 @@
   import Pause from "./lib/icons/Pause.svelte";
   import Play from "./lib/icons/Play.svelte";
 
-  const flashTime = 100;
+  const flashTime = 75;
   let playing = false;
   let flash = false;
   Tone.Transport.bpm.value = 80;
@@ -54,30 +54,46 @@
   }
 </script>
 
-<main>
-  <div class="mb-4 flex justify-center">
+<main
+  class="max-h-4xl gap-responsive-gap flex h-screen w-screen max-w-xl flex-col items-center justify-center p-4 sm:gap-6 sm:p-8"
+>
+  <div class="flex justify-center">
     <div class="relative">
       {#if flash}
+        <!-- Outer glow ring -->
         <div
           out:fade={{ duration: flashTime }}
-          class="absolute -inset-1 rounded-full bg-teal-300 blur"
+          class="absolute -inset-2 rounded-full bg-teal-300/50 blur-md"
+        ></div>
+
+        <!-- Inner bright ring -->
+        <div
+          out:fade={{ duration: flashTime }}
+          class="absolute -inset-1 rounded-full bg-teal-200/20 blur-sm"
+        ></div>
+
+        <!-- Sharp highlight -->
+        <div
+          out:fade={{ duration: flashTime }}
+          class="absolute -inset-0.5 rounded-full bg-teal-100/30"
         ></div>
       {/if}
       <div
         class="h-6 w-6 rounded-full transition"
         class:bg-teal-900={!playing}
         class:bg-teal-500={playing}
+        class:brightness-150={flash}
       ></div>
     </div>
   </div>
 
-  <p class="mb-4 text-6xl">
+  <p class="text-responsive-bpm my-2 leading-none">
     {Math.round(Tone.Transport.bpm.value)}<span
       class="ml-2 text-xl text-slate-400">bpm</span
     >
   </p>
 
-  <div class="mb-2 grid grid-cols-2 gap-3">
+  <div class="grid w-full max-w-xs grid-cols-2 gap-2">
     <Button on:click={() => updateTempo((tempo) => tempo - 1)}>-</Button>
     <Button on:click={() => updateTempo((tempo) => tempo + 1)}>+</Button>
     <Button on:click={() => updateTempo((tempo) => tempo - 5)}>-5</Button>
